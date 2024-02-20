@@ -1,0 +1,6 @@
+Hello {{.Name}},
+
+Your verification code is: {{.Code}}
+Please use this code to verify your account. This code is only valid for 10 minutes.
+
+Thank you for using Nolag.
