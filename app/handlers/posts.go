@@ -6,6 +6,7 @@ import (
 	"github.com/twibber/core/db"
 	"github.com/twibber/core/utils"
 	"gorm.io/gorm"
+	"log/slog"
 	"time"
 )
 
@@ -75,7 +76,7 @@ func GetPost(c *fiber.Ctx) error {
 func DeletePost(c *fiber.Ctx) error {
 	// Get the post by its ID.
 	var post models.Post
-	if err := db.DB.Model(models.Post{
+	if err := db.DB.Where(models.Post{
 		BaseModel: models.BaseModel{ID: c.Params("post")},
 	}).First(&post).Error; err != nil {
 		return err
@@ -89,8 +90,14 @@ func DeletePost(c *fiber.Ctx) error {
 		return utils.NewError(fiber.StatusForbidden, "You are not the author of this post.", nil)
 	}
 
+	slog.With("post", post,
+		"created_at", post.CreatedAt,
+		"now", time.Now(),
+		"since", time.Since(post.CreatedAt),
+	).Debug("DeletePost")
+
 	// Check if the post was created within the last 5 minutes.
-	if time.Since(post.CreatedAt) > time.Minute*5 {
+	if time.Since(post.CreatedAt) > 5*time.Minute {
 		return utils.NewError(fiber.StatusForbidden, "You can only delete posts created within the last 5 minutes.", nil)
 	}
 
