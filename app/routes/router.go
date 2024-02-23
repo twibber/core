@@ -48,6 +48,8 @@ func Configure() *fiber.App {
 	AuthRoutes(app.Group("/auth"))
 	AccountRoutes(app.Group("/account", middleware.Auth(false)))
 
+	PostRoutes(app.Group("/posts")) // No authentication required to view posts, handling inside the subrouter
+
 	// Return the configured app for the webserver to start listening
 	return app
 }

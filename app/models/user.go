@@ -14,6 +14,8 @@ type User struct {
 	Email string `gorm:"size:255;unique;not null" json:"email,omitempty"` // Ommitted for security reasons
 
 	Connections []Connection `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"connections,omitempty"`
+
+	Posts []Post `gorm:"foreignKey:AuthorID;references:ID;constraint:OnDelete:CASCADE" json:"posts,omitempty"`
 }
 
 // ConnectionType represents the type of connection.
