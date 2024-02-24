@@ -13,6 +13,7 @@ var Models = []interface{}{
 	&Connection{},
 	&Session{},
 	&Post{},
+	&Like{},
 }
 
 // BaseModel defines the basic structure for database models.

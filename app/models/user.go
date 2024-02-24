@@ -16,6 +16,7 @@ type User struct {
 	Connections []Connection `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"connections,omitempty"`
 
 	Posts []Post `gorm:"foreignKey:AuthorID;references:ID;constraint:OnDelete:CASCADE" json:"posts,omitempty"`
+	Likes []Like `gorm:"foreignKey:LikedByID;references:ID;constraint:OnDelete:CASCADE" json:"likes,omitempty"`
 }
 
 // ConnectionType represents the type of connection.
