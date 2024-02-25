@@ -10,7 +10,15 @@ type Post struct {
 
 	Content string `gorm:"size:512" json:"content"`
 
+	// Relations
 	Likes []Like `gorm:"foreignKey:PostID;references:ID;constraint:OnDelete:CASCADE" json:"likes,omitempty"`
+
+	// -- Replies
+	// Parent is only used when a post is a reply to another post.
+	ParentID string `json:"parent_id"`
+	Parent   *Post  `gorm:"foreignKey:ParentID;references:ID;constraint:OnDelete:CASCADE" json:"parent,omitempty"`
+	// delete all replies when a post is deleted
+	Replies []Post `gorm:"foreignKey:ParentID;references:ID;constraint:OnDelete:CASCADE" json:"replies,omitempty"` // delete all replies when a post is deleted
 }
 
 type Like struct {
