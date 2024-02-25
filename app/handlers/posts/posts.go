@@ -60,7 +60,7 @@ func CreateReply(c *fiber.Ctx) error {
 		AuthorID: user.Connection.UserID,
 		Content:  body.Content,
 		// Set the parent ID to the ID of the post we are replying to.
-		ParentID: post.ID,
+		ParentID: &post.ID,
 	}
 
 	// Create the reply in the database and return any errors.

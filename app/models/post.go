@@ -15,8 +15,8 @@ type Post struct {
 
 	// -- Replies
 	// Parent is only used when a post is a reply to another post.
-	ParentID string `json:"parent_id"`
-	Parent   *Post  `gorm:"foreignKey:ParentID;references:ID;constraint:OnDelete:CASCADE" json:"parent,omitempty"`
+	ParentID *string `gorm:"null" json:"parent_id,omitempty"` // Parent is only used when a post is a reply to another post, therefore it is nullable and optional
+	Parent   *Post   `gorm:"foreignKey:ParentID;references:ID;constraint:OnDelete:CASCADE" json:"parent,omitempty"`
 	// delete all replies when a post is deleted
 	Replies []Post `gorm:"foreignKey:ParentID;references:ID;constraint:OnDelete:CASCADE" json:"replies,omitempty"` // delete all replies when a post is deleted
 }

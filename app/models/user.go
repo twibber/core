@@ -17,6 +17,21 @@ type User struct {
 
 	Posts []Post `gorm:"foreignKey:AuthorID;references:ID;constraint:OnDelete:CASCADE" json:"posts,omitempty"`
 	Likes []Like `gorm:"foreignKey:LikedByID;references:ID;constraint:OnDelete:CASCADE" json:"likes,omitempty"`
+
+	Followers []Follow `gorm:"foreignKey:FollowingID;references:ID;constraint:OnDelete:CASCADE" json:"followers,omitempty"`
+	Following []Follow `gorm:"foreignKey:FollowerID;references:ID;constraint:OnDelete:CASCADE" json:"following,omitempty"`
+}
+
+// Follow represents a follow relationship between two users.
+type Follow struct {
+	BaseModel
+
+	// Follower and Following are the users involved in the follow relationship.
+	FollowerID string `gorm:"not null" json:"follower_id"`
+	Follower   *User  `gorm:"foreignKey:FollowerID;references:ID;constraint:OnDelete:CASCADE" json:"follower,omitempty"`
+
+	FollowingID string `gorm:"not null" json:"following_id"`
+	Following   *User  `gorm:"foreignKey:FollowingID;references:ID;constraint:OnDelete:CASCADE" json:"following,omitempty"`
 }
 
 // ConnectionType represents the type of connection.
