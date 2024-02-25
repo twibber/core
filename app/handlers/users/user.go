@@ -48,7 +48,7 @@ func FollowUser(c *fiber.Ctx) error {
 		First(&user).Error; err != nil {
 		return err
 	}
-	
+
 	// Check if the user is already being followed
 	var follow models.Follow
 	if err := db.DB.
@@ -61,6 +61,16 @@ func FollowUser(c *fiber.Ctx) error {
 	if follow.ID != "" {
 		return fiber.NewError(fiber.StatusConflict, "You are already following this user")
 	}
+
+	// Create the follow
+	if err := db.DB.Create(&models.Follow{
+		FollowerID:  c.Locals("user").(string),
+		FollowingID: user.ID,
+	}).Error; err != nil {
+		return err
+	}
+
+	return c.SendStatus(fiber.StatusOK)
 }
 
 func UnfollowUser(c *fiber.Ctx) error {
