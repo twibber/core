@@ -163,6 +163,44 @@ func GetPost(c *fiber.Ctx) error {
 	return c.JSON(extendPost(post, userID))
 }
 
+// GetUserPosts returns the posts made by the specified user
+func GetUserPosts(c *fiber.Ctx) error {
+	// get user by username
+	var user models.User
+	if err := db.DB.
+		Where(models.User{Username: c.Params("user")}).
+		First(&user).Error; err != nil {
+		return err
+	}
+
+	var posts []models.Post
+	if err := db.DB.
+		Preload("Likes").
+		Preload("Replies").
+		Preload("Author", func(db *gorm.DB) *gorm.DB {
+			return db.Omit("Email") // Omit the email of the author for privacy reasons.
+		}).
+		Where(models.Post{
+			AuthorID: user.ID,
+		}).
+		Order("created_at desc").
+		Find(&posts).Error; err != nil {
+		return err
+	}
+
+	// Get the id of the current user
+	userID := utils.GetUserID(c)
+
+	// Loop through the posts and extend them.
+	var extendedPosts []ExtendedPost
+	for _, post := range posts {
+		extendedPosts = append(extendedPosts, extendPost(post, userID))
+	}
+
+	// Return the extended version of the posts.
+	return c.JSON(extendedPosts)
+}
+
 // ListPostReplies handles the retrieval of all replies to a single post by its ID.
 func ListPostReplies(c *fiber.Ctx) error {
 	// Get the post by its ID.
